@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>petproject040</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js"></script>
+    <style>
+        :root {
+            --primary: #6200ea;
+            --secondary: #03dac6;
+            --dark: #121212;
+            --light: #f5f5f5;
+            --error: #cf6679;
+            --success: #03dac6;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--dark);
+            color: var(--light);
+            overflow-x: hidden;
+        }
+        
+        header {
+            background: linear-gradient(135deg, var(--primary), #9d4edd);
+            padding: 2rem 1rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .header-content {
+            position: relative;
+            z-index: 1;
+        }
+        
+        .background-shapes {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            opacity: 0.3;
+        }
+        
+        .shape {
+            position: absolute;
+            border-radius: 50%;
+        }
+        
+        h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(90deg, var(--secondary), #b4ffff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        h2 {
+            font-size: 2.5rem;
+            margin: 2rem 0 1rem;
+            color: var(--secondary);
+        }
+        
+        h3 {
+            font-size: 1.8rem;
+            margin: 1.5rem 0 0.8rem;
+            color: #bb86fc;
+        }
+        
+        p {
+            line-height: 1.6;
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .card {
+            background-color: rgba(30, 30, 30, 0.7);
+            border-radius: 8px;
+            padding: 2rem;
+            margin: 1.5rem 0;
+            border-left: 4px solid var(--secondary);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+        }
+        
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+        
+        .card-small {
+            padding: 1.5rem;
+            text-align: center;
+            border-left: none;
+            border-bottom: 4px solid var(--primary);
+        }
+        
+        .card-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: var(--primary);
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 0.8rem 1.5rem;
+            background: linear-gradient(45deg, var(--primary), #9d4edd);
+            color: white;
+            border: none;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: bold;
+            margin: 0.5rem 0.5rem 0.5rem 0;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+        }
+        
+        pre {
+            background-color: #1e1e1e;
+            padding: 1rem;
+            border-radius: 5px;
+            overflow: auto;
+            font-family: 'Courier New', Courier, monospace;
+            margin: 1rem 0;
+            border-left: 4px solid var(--primary);
+        }
+        
+        code {
+            font-family: 'Courier New', Courier, monospace;
+            background-color: rgba(98, 0, 234, 0.1);
+            padding: 0.2rem 0.4rem;
+            border-radius: 3px;
+            color: var(--secondary);
+        }
+        
+        .diagram {
+            background-color: #1e1e1e;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 2rem 0;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .diagram svg {
+            max-width: 100%;
+            height: auto;
+        }
+        
+        .nav-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            z-index: 3;
+        }
+        
+        nav {
+            text-align: center;
+            margin-top: 1rem;
+        }
+        
+        nav ul {
+            list-style: none;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        nav li {
+            margin: 0 1rem;
+        }
+        
+        nav a {
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+            padding: 0.5rem;
+            transition: color 0.3s ease;
+            position: relative;
+        }
+        
+        nav a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background-color: var(--secondary);
+            transition: width 0.3s ease;
+        }
+        
+        nav a:hover {
+            color: var(--secondary);
+        }
+        
+        nav a:hover::after {
+            width: 100%;
+        }
+        
+        .highlight {
+            color: var(--secondary);
+            font-weight: bold;
+        }
+        
+        .tag {
+            display: inline-block;
+            background-color: rgba(98, 0, 234, 0.2);
+            color: var(--secondary);
+            padding: 0.3rem 0.6rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            margin: 0.2rem;
+        }
+        
+        .progress-container {
+            margin: 2rem 0;
+        }
+        
+        .progress-bar {
+            background-color: #1e1e1e;
+            border-radius: 5px;
+            height: 20px;
+            margin-top: 0.5rem;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            border-radius: 5px;
+            width: 0;
+            transition: width 1.5s ease;
+        }
+        
+        .semantic-progress {
+            background: linear-gradient(90deg, #6200ea, #bb86fc);
+        }
+        
+        .service-progress {
+            background: linear-gradient(90deg, #03dac6, #018786);
+        }
+        
+        .web-progress {
+            background: linear-gradient(90deg, #cf6679, #9d4edd);
+        }
+        
+        footer {
+            background-color: #121212;
+            text-align: center;
+            padding: 2rem;
+            margin-top: 3rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+        
+        .fade-in {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+        
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.5rem;
+            }
+            
+            h2 {
+                font-size: 2rem;
+            }
+            
+            h3 {
+                font-size: 1.5rem;
+            }
+            
+            .container {
+                padding: 1rem;
+            }
+            
+            .nav-toggle {
+                display: block;
+            }
+            
+            nav {
+                position: fixed;
+                top: 0;
+                right: -100%;
+                width: 80%;
+                height: 100vh;
+                background-color: var(--dark);
+                z-index: 2;
+                transition: right 0.3s ease;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                box-shadow: -5px 0 15px rgba(0, 0, 0, 0.3);
+            }
+            
+            nav.active {
+                right: 0;
+            }
+            
+            nav ul {
+                flex-direction: column;
+            }
+            
+            nav li {
+                margin: 1rem 0;
+            }
+            
+            .overlay {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background-color: rgba(0, 0, 0, 0.5);
+                z-index: 1;
+                opacity: 0;
+                visibility: hidden;
+                transition: opacity 0.3s ease;
+            }
+            
+            .overlay.active {
+                opacity: 1;
+                visibility: visible;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="background-shapes" id="shapes"></div>
+        <div class="header-content">
+            <h1>OWL-S</h1>
+            <p class="pulse">Web Ontology Language for Services</p>
+            <nav id="nav">
+                <ul>
+                    <li><a href="#introduction">Introduction</a></li>
+                    <li><a href="#components">Components</a></li>
+                    <li><a href="#examples">Examples</a></li>
+                    <li><a href="#applications">Applications</a></li>
+                    <li><a href="#resources">Resources</a></li>
+                </ul>
+            </nav>
+        </div>
+        <button class="nav-toggle" id="nav-toggle">☰</button>
+    </header>
+    
+    <div class="overlay" id="overlay"></div>
+    
+    <main class="container">
+        <section id="introduction" class="fade-in">
+            <div class="card">
+                <h2>Introduction to OWL-S</h2>
+                <p>OWL-S (formerly DAML-S) is an ontology built on top of OWL (Web Ontology Language) for describing semantic web services. It provides a framework for automating web service discovery, invocation, composition, and monitoring by providing a machine-interpretable semantics.</p>
+                <p>OWL-S addresses the limitations of traditional web service descriptions like WSDL (Web Services Description Language) by adding semantic annotations that enable automated reasoning about services and their capabilities.</p>
+                
+                <div class="progress-container">
+                    <p>Semantic Web Evolution</p>
+                    <div class="progress-bar">
+                        <div class="progress-fill semantic-progress" data-width="85%"></div>
+                    </div>
+                </div>
+                
+                <div class="progress-container">
+                    <p>Service Description Completeness</p>
+                    <div class="progress-bar">
+                        <div class="progress-fill service-progress" data-width="75%"></div>
+                    </div>
+                </div>
+                
+                <div class="progress-container">
+                    <p>Web Service Integration</p>
+                    <div class="progress-bar">
+                        <div class="progress-fill web-progress" data-width="65%"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section id="components" class="fade-in">
+            <h2>Core Components of OWL-S</h2>
+            <p>OWL-S consists of three main components that together provide a comprehensive description of a web service:</p>
+            
+            <div class="card-grid">
+                <div class="card card-small">
+                    <div class="card-icon">📋</div>
+                    <h3>Service Profile</h3>
+                    <p>Describes <span class="highlight">what the service does</span>, including inputs, outputs, preconditions, and effects (IOPEs). Used for service discovery and matchmaking.</p>
+                    <span class="tag">Discovery</span>
+                    <span class="tag">Advertising</span>
+                </div>
+                
+                <div class="card card-small">
+                    <div class="card-icon">⚙️</div>
+                    <h3>Service Model</h3>
+                    <p>Describes <span class="highlight">how the service works</span>, detailing the workflow and process model. Used for composition, monitoring, and coordination.</p>
+                    <span class="tag">Process</span>
+                    <span class="tag">Composition</span>
+                </div>
+                
+                <div class="card card-small">
+                    <div class="card-icon">🔌</div>
+                    <h3>Service Grounding</h3>
+                    <p>Describes <span class="highlight">how to access the service</span>, mapping to concrete protocols and message formats like SOAP and REST.</p>
+                    <span class="tag">Implementation</span>
+                    <span class="tag">Binding</span>
+                </div>
+            </div>
+            
+            <div class="diagram">
+                <svg width="800" height="400" viewBox="0 0 800 400">
+                    <!-- Main OWL-S Container -->
+                    <rect x="100" y="50" width="600" height="300" rx="10" ry="10" fill="#1e1e1e" stroke="#6200ea" stroke-width="2"/>
+                    <text x="400" y="30" font-size="24" fill="#f5f5f5" text-anchor="middle">OWL-S Architecture</text>
+                    
+                    <!-- Profile -->
+                    <rect x="150" y="100" width="150" height="100" rx="5" ry="5" fill="#6200ea" opacity="0.7"/>
+                    <text x="225" y="140" font-size="18" fill="#ffffff" text-anchor="middle">Service Profile</text>
+                    <text x="225" y="170" font-size="12" fill="#ffffff" text-anchor="middle">What it does</text>
+                    
+                    <!-- Model -->
+                    <rect x="325" y="100" width="150" height="100" rx="5" ry="5" fill="#03dac6" opacity="0.7"/>
+                    <text x="400" y="140" font-size="18" fill="#121212" text-anchor="middle">Service Model</text>
+                    <text x="400" y="170" font-size="12" fill="#121212" text-anchor="middle">How it works</text>
+                    
+                    <!-- Grounding -->
+                    <rect x="500" y="100" width="150" height="100" rx="5" ry="5" fill="#bb86fc" opacity="0.7"/>
+                    <text x="575" y="140" font-size="18" fill="#121212" text-anchor="middle">Service Grounding</text>
+                    <text x="575" y="170" font-size="12" fill="#121212" text-anchor="middle">How to access</text>
+                    
+                    <!-- Connections -->
+                    <line x1="225" y1="200" x2="225" y2="250" stroke="#ffffff" stroke-width="2"/>
+                    <line x1="400" y1="200" x2="400" y2="250" stroke="#ffffff" stroke-width="2"/>
+                    <line x1="575" y1="200" x2="575" y2="250" stroke="#ffffff" stroke-width="2"/>
+                    <line x1="225" y1="250" x2="575" y2="250" stroke="#ffffff" stroke-width="2"/>
+                    
+                    <!-- Web Service -->
+                    <rect x="325" y="280" width="150" height="40" rx="5" ry="5" fill="#cf6679" opacity="0.7"/>
+                    <text x="400" y="305" font-size="16" fill="#ffffff" text-anchor="middle">Web Service</text>
+                    <line x1="400" y1="250" x2="400" y2="280" stroke="#ffffff" stroke-width="2"/>
+                </svg>
+            </div>
+        </section>
+        
+        <section id="examples" class="fade-in">
+            <div class="card">
+                <h2>OWL-S Example</h2>
+                <p>Here's a simplified example of how an OWL-S description might look for a weather forecast service:</p>
+                
+                <pre>&lt;service:Service rdf:ID="WeatherService"&gt;
+  &lt;service:presents rdf:resource="#WeatherProfile"/&gt;
+  &lt;service:describedBy rdf:resource="#WeatherProcess"/&gt;
+  &lt;service:supports rdf:resource="#WeatherGrounding"/&gt;
+&lt;/service:Service&gt;
+
+&lt;profile:Profile rdf:ID="WeatherProfile"&gt;
+  &lt;service:presentedBy rdf:resource="#WeatherService"/&gt;
+  &lt;profile:serviceName&gt;Weather Forecast Service&lt;/profile:serviceName&gt;
+  &lt;profile:hasInput rdf:resource="#LocationInput"/&gt;
+  &lt;profile:hasOutput rdf:resource="#ForecastOutput"/&gt;
+&lt;/profile:Profile&gt;
+
+&lt;process:AtomicProcess rdf:ID="WeatherProcess"&gt;
+  &lt;process:hasInput rdf:resource="#LocationInput"/&gt;
+  &lt;process:hasOutput rdf:resource="#ForecastOutput"/&gt;
+&lt;/process:AtomicProcess&gt;
+
+&lt;grounding:WsdlGrounding rdf:ID="WeatherGrounding"&gt;
+  &lt;grounding:hasAtomicProcessGrounding rdf:resource="#WeatherAtomicGrounding"/&gt;
+&lt;/grounding:WsdlGrounding&gt;</pre>
+                
+                <p>This example shows how the three components work together to describe what the service does (providing weather forecasts), how it works (taking a location and returning a forecast), and how to access it (through a specific WSDL grounding).</p>
+            </div>
+        </section>
+        
+        <section id="applications" class="fade-in">
+            <h2>Applications of OWL-S</h2>
+            
+            <div class="card">
+                <h3>Automated Web Service Discovery</h3>
+                <p>OWL-S enables automated discovery of web services based on their capabilities rather than just keywords. A client can specify required inputs, outputs, preconditions, and effects, and a matchmaking system can find services that satisfy these requirements.</p>
+                
+                <h3>Service Composition</h3>
+                <p>Complex tasks often require multiple services working together. OWL-S's process model allows for automatic or semi-automatic composition of services into workflows that achieve a desired goal.</p>
+                
+                <h3>Semantic Interoperability</h3>
+                <p>By providing a semantic description of services, OWL-S facilitates interoperability between different systems, even when they use different terminologies or data formats.</p>
+                
+                <h3>Verification and Validation</h3>
+                <p>OWL-S descriptions can be used to verify that a service meets certain requirements or constraints before execution, reducing the risk of failures during runtime.</p>
+            </div>
+        </section>
+        
+        <section id="resources" class="fade-in">
+            <h2>OWL-S Resources</h2>
+            
+            <div class="card-grid">
+                <div class="card card-small">
+                    <div class="card-icon">📚</div>
+                    <h3>Specifications</h3>
+                    <p>The official OWL-S specification documents provide detailed information about the language's syntax and semantics.</p>
+                    <a href="#" class="btn">Learn More</a>
+                </div>
+                
+                <div class="card card-small">
+                    <div class="card-icon">🧩</div>
+                    <h3>Tools</h3>
+                    <p>Various tools exist for creating, validating, and reasoning with OWL-S descriptions, including editors, validators, and reasoners.</p>
+                    <a href="#" class="btn">Explore Tools</a>
+                </div>
+                
+                <div class="card card-small">
+                    <div class="card-icon">👥</div>
+                    <h3>Community</h3>
+                    <p>Join the community of researchers and practitioners working on OWL-S and related semantic web service technologies.</p>
+                    <a href="#" class="btn">Join Community</a>
+                </div>
+            </div>
+        </section>
+    </main>
+    
+    <footer>
+        <p>© 2025 OWL-S Resource Center | Web Ontology Language for Services</p>
+        <p>A comprehensive guide to semantic web service descriptions</p>
+    </footer>
+    
+    <script>
+        $(document).ready(function() {
+            // Create background shapes
+            const shapes = $('#shapes');
+            for (let i = 0; i < 15; i++) {
+                const size = Math.random() * 100 + 50;
+                const left = Math.random() * 100;
+                const top = Math.random() * 100;
+                const color = i % 2 === 0 ? '#6200ea' : '#03dac6';
+                shapes.append(`<div class="shape" style="width: ${size}px; height: ${size}px; background-color: ${color}; left: ${left}%; top: ${top}%;"></div>`);
+            }
+            
+            // Animate shapes
+            $('.shape').each(function(index) {
+                gsap.to(this, {
+                    x: Math.random() * 100 - 50,
+                    y: Math.random() * 100 - 50,
+                    duration: Math.random() * 10 + 10,
+                    repeat: -1,
+                    yoyo: true,
+                    ease: "sine.inOut",
+                    delay: index * 0.2
+                });
+            });
+            
+            // Mobile navigation
+            $('#nav-toggle').click(function() {
+                $('#nav').toggleClass('active');
+                $('#overlay').toggleClass('active');
+            });
+            
+            $('#overlay').click(function() {
+                $('#nav').removeClass('active');
+                $(this).removeClass('active');
+            });
+            
+            // Smooth scrolling for navigation
+            $('nav a').click(function(e) {
+                e.preventDefault();
+                
+                $('#nav').removeClass('active');
+                $('#overlay').removeClass('active');
+                
+                const target = $($(this).attr('href'));
+                $('html, body').animate({
+                    scrollTop: target.offset().top - 20
+                }, 800);
+            });
+            
+            // Animate progress bars on scroll
+            $(window).scroll(function() {
+                $('.progress-fill').each(function() {
+                    const position = $(this).offset().top;
+                    const scroll = $(window).scrollTop();
+                    const windowHeight = $(window).height();
+                    
+                    if (scroll > position - windowHeight + 100) {
+                        const width = $(this).attr('data-width');
+                        $(this).css('width', width);
+                    }
+                });
+                
+                // Fade in elements
+                $('.fade-in').each(function() {
+                    const position = $(this).offset().top;
+                    const scroll = $(window).scrollTop();
+                    const windowHeight = $(window).height();
+                    
+                    if (scroll > position - windowHeight + 100) {
+                        $(this).addClass('visible');
+                    }
+                });
+            }).scroll(); // Trigger scroll on page load
+        });
+    </script>
+</body>
+</html>
